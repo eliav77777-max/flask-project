@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Input Text</title>
+</head>
+<body>
+ <h1>Send Text to Discord</h1>
+ <form action="/input_text" method="POST" id="textForm">
+   <input type="text" id="text" name="text" required>
+   <button type="submit">Submit</button>
+ </form>
+ <h2>Recent Messages (last 30 min)</h2>
+ <ul id="messagesList"></ul>
+ <script>
+ async function fetchMessages() {
+     const response = await fetch('/get_messages');
+     const data = await response.json();
+     const list = document.getElementById('messagesList');
+     list.innerHTML = '';
+     if(data.status === 'success') {
+         data.messages.forEach(msg => {
+             const li = document.createElement('li');
+             li.textContent = `[${msg[1]}] ${msg[0]}`;
+             list.appendChild(li);
+         });
+     }
+ }
+ setInterval(fetchMessages, 5000);
+ fetchMessages();
+ </script>
+</body>
+</html>
